@@ -43,7 +43,7 @@ def update_R(com1, rate1, T, com2, flag):
 
     np.save(filename, R)
 
-def update_R_CAE(com1, com2, rate2, A):
+def update_R_CAE(com1, com2, rate2, A, IsUpdate_rate1=True, rate1=0.0):
     '''update the solution space R 
 
     Args:
@@ -53,14 +53,23 @@ def update_R_CAE(com1, com2, rate2, A):
     '''
     filename = "./R/" + str(com1) + "and" + str(com2) + ".npy"
     R = np.load(filename)       
-    n_1 = round(rate2 * R.shape[1]) # the number of residual channel at com2 layer
+    n_2 = round(rate2 * R.shape[1]) # the number of residual channel at com2 layer
+    n_1 = 0
+    if IsUpdate_rate1:
+        n_1 = round(rate1 * R.shape[0])
     for i in range(1, R.shape[0]):
         for j in range(1, R.shape[1]):
             if R[i][j]:
-                if(j > n_1 and CRS.CAE(com1, i / R.shape[0], com2, j / R.shape[1]) > A):
-                    pass
+                if IsUpdate_rate1:
+                    if(i > n_1 and j > n_2 and CRS.CAE(com1, i / R.shape[0], com2, j / R.shape[1]) > A):
+                        pass
+                    else:
+                        R[i][j] = False                    
                 else:
-                    R[i][j] = False
+                    if(j > n_2 and CRS.CAE(com1, i / R.shape[0], com2, j / R.shape[1]) > A):
+                        pass
+                    else:
+                        R[i][j] = False
     np.save(filename, R)
 
 def nextPoint_R(com1, com2):

@@ -62,6 +62,7 @@ def main(input_T, is_warmup=False):
                 rate_2 = next_point[1]       
                 add_logs('next_point :' + str(next_point) + "\n") 
                 add_logs("------For judgment：------" + "\n")
+                IsUpdate_rate1 = True
                 if CRS.CAE(j, rate_2, j, rate_2) > A and CRS.A(j, rate_2) > A and CRS.CAE(i, rate_1, j, rate_2) > A :
                     A_ = CRS.A(j, rate_2, i, rate_1)
                     if A_ > A : # update the optimal solution
@@ -73,8 +74,9 @@ def main(input_T, is_warmup=False):
                         logs += "New Best Compression Rate: " + str(rate_temp) + "\n"
                         logs += "New Best Accuracy: " + str(A) + "\n"
                         add_logs(logs)
+                        IsUpdate_rate1 = False
                 add_logs('For update_R_CAE\n')
-                update_R_CAE(i, j, rate_2, A)  # update solution space R 
+                update_R_CAE(i, j, rate_2, A, IsUpdate_rate1=IsUpdate_rate1, rate1=rate_1)  # update solution space R 
 
     add_logs("Best point:" + str(turn_r_L(L_temp)) + " " + str(rate_temp) + " " +str(A) + "\n")
 
